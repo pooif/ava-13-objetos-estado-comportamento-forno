@@ -1,57 +1,130 @@
-# Template para projetos Java usando o Visual Studio Code
+# 1.3 // Objetos, Estado e Comportamento // Forno
 
-Um _template_ é um projeto base, para não iniciar do zero e ter pelo menos uma estrutura mínima onde se apoiar.
+Use este link do GitHub Classroom para ter sua cópia alterável deste repositório: <>
 
-Antes de começar a desenvolver com este _template_ é necessário ter instalado o Java Software Development Kit (JDK), o editor Visual Studio Code (VSCode) e o utilitário de controle de versão de código _Git_.
+Implementar respeitando os fundamentos de Orientação a Objetos.
 
+**Tópicos desta atividade:** abstrações, classes, objetos, construtores, validade, atributos, estado, comportamento, comandos e consultas, excepcionalidades e especificações.
 
+---
 
-## Instalação e Configuração do JDK
+Considere um Forno sofisticado de controle via app Android/iOS. É possível ligar, desligar, ajustar temperatura e outros detalhes. Os modelos variam segundo seu volume, tensão, potência e dimensões (na forma largura, altura e profundidade em `cm`). Então, implemente conforme especificação a seguir.
 
-É necessário instalar o JDK a partir da versão 8, porém é recomendada versão 11-LTS (Long Term Support - suporte de longo prazo) ou até mesmo a 17-LTS.
+Casos de Teste:
 
-Para o Sistema Operacional (SO) Windows, ele pode ser obtido aqui <https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot>. Siga as instruções de instalação e não esqueça de selecionar os opcionais durante o processo, especialmente a parte ⚠️ _"add Java to PATH"_.
+```java
+Forno f = new Forno(45, 220, 1700, 66, 40, 54);
+System.out.println(f.volume == 45);
+System.out.println(f.tensao == 220);
+System.out.println(f.potencia == 1700);
+System.out.println(f.largura == 66);
+System.out.println(f.altura == 40);
+System.out.println(f.profundidade == 54);
+// todos esses atributos devem ser constantes, as atribuções a seguir não podem compilar,
+// verifique se estão protegidas e então comente estas linhas:
+f.volume = 450;
+f.tensao = 2200;
+f.potencia = 17000;
+f.altura = 400;
+f.largura = 660;
+f.profundidade = 540;
 
-Para Sistemas Operacionais Linux/Debian, como Ubuntu, Pop OS, Mint, Elementary, etc, execute no terminal o comando `sudo apt install openjdk-11-jdk`, que a mágica vai acontecer.
+// Novo Forno
+Forno forno = new Forno(84, 220, 1860, 61, 58, 58);
+System.out.println(forno.volume == 84);
+System.out.println(forno.tensao == 220);
+System.out.println(forno.potencia == 1860);
+System.out.println(forno.altura == 58);
+System.out.println(forno.largura == 61);
+System.out.println(forno.profundidade == 58);
 
-Para testar a instalação, seja no Windows ou Linux, abra o _Prompt_ de Comando (cmd) ou o Terminal e execute o compilador Java com `javac -version`. A saída deve ser algo com `javac 11.0.9.1`, ou outra versão.
+// métodos para consulta
+System.out.println(forno.temperatura()); // 0 (de 50 a 300)
+System.out.println(forno.ligado()); // false
+// os atributos temperatura e ligado devem ser inacessíveis (privados)
+// não deve compilar, verifique e depois comente as seguintes linhas
+System.out.println(forno.temperatura);
+System.out.println(forno.ligado);
 
+// interagindo com o forno (submetendo comandos ao objeto)
+System.out.println(forno.ligado() == false);
+forno.aumentarTemperatura(); // liga e vai para 50
+System.out.println(forno.ligado() == true);
+System.out.println(forno.temperatura() == 50); // 50
+forno.aumentarTemperatura();
+System.out.println(forno.temperatura() == 100); // 100
+forno.aumentarTemperatura();
+System.out.println(forno.temperatura() == 150); // 150
+forno.aumentarTemperatura();
+System.out.println(forno.temperatura() == 200); // 200
+forno.aumentarTemperatura();
+// é isso mesmo, há um step intermediário entre 200 e 250
+System.out.println(forno.temperatura() == 220); // 220
+forno.aumentarTemperatura();
+System.out.println(forno.temperatura() == 250); // 250
+forno.aumentarTemperatura();
+System.out.println(forno.temperatura() == 300); // 300
 
+forno.aumentarTemperatura(); // já está no máximo
+System.out.println(forno.temperatura() == 300); // 300
+System.out.println(forno.ligado() == true);
 
-## Instalação e Configuração do Visual Studio Code (VSCode)
+// reduzindo
+forno.diminuirTemperatura();
+forno.diminuirTemperatura();
+forno.diminuirTemperatura();
+System.out.println(forno.temperatura() == 200); // 200
 
-O VSCode pode ser obtido aqui: <https://code.visualstudio.com/download>. A instalação é semelhante nos Sistemas Operacionais Windows e Linux.
+// desligando direto
+forno.desligar();
+System.out.println(forno.ligado() == false);
+System.out.println(forno.temperatura() == 0);
 
-No Windows, abra o instalador e não esqueça de selecionar todos os opcionais, como _adicionar code ao path_ e _adicionar "abrir com code" ao menu_, por exemplo.
+// já está desligado
+forno.diminuirTemperatura();
+System.out.println(forno.ligado() == false);
+System.out.println(forno.temperatura() == 0);
 
-No Linux, abra o arquivo `.deb` baixado no gerenciador de pacotes e instale normalmente conforme instruções de seu sistema operacional.
+// timer de 1 a 120 minutos
+forno.setTimer(15); // minutos
 
-Este _template_ possui uma pasta [.vscode](.vscode) com as extensões necessárias em [extensions.json](.vscode/extensions.json) e as configurações recomendadas em [settings.json](.vscode/settings.json) para um **ambiente de ensino** (configuração didática). Fique a vontade para alterá-los como achar melhor.
+forno.aumentarTemperatura();
+forno.aumentarTemperatura();
+forno.aumentarTemperatura();
 
-A única extensão obrigatória é a _"vscjava.vscode-java-pack"_.
+System.out.println(forno.ligado() == true);
+System.out.println(forno.temperatura() == 150);
+System.out.println(forno.tempoRestante() == 15);
 
-A extensão _"EditorConfig"_ é bastante recomendada. Ela funciona junto com o arquivo [.editorconfig](.editorconfig) presente neste _template_ para padronizar a formatação dos códigos-fonte.
+forno.tick(); // tick do timer (baixa 1min)
+System.out.println(forno.tempoRestante() == 14);
 
-Finalmente, se preferes o editor em Português, instale a extensão _Portuguese (Brazil) Language Pack for Visual Studio Code_.
+// +4 ticks
+forno.tick(); forno.tick(); forno.tick(); forno.tick();
+System.out.println(forno.tempoRestante() == 10);
+System.out.println(forno.ligado() == true);
+System.out.println(forno.temperatura() == 150);
 
+// +10 ticks e o forno é desligado ao fim do timer
+forno.tick(); forno.tick(); forno.tick(); forno.tick(); forno.tick();
+forno.tick(); forno.tick(); forno.tick(); forno.tick(); forno.tick();
+System.out.println(forno.tempoRestante() == 0);
+System.out.println(forno.temperatura() == 0);
+System.out.println(forno.ligado() == false);
 
+// novo timer
+forno.setTimer(120);
+forno.aumentarTemperatura(); forno.aumentarTemperatura();
+System.out.println(forno.ligado() == true);
+System.out.println(forno.temperatura() == 100);
+System.out.println(forno.tempoRestante() == 120);
 
-## Instalação e Configuração do Git
+while (forno.ligado()) forno.tick(); // tick até desligar
 
-O Git para Windows pode ser obtido neste link: <https://git-scm.com/download/win>. A instalação é simples e intuitiva. Como sempre, não esqueça dos opcionais, principalmente a opção _adicionar o git ao path_!
+System.out.println(forno.tempoRestante() == 0);
+System.out.println(forno.ligado() == false);
+System.out.println(forno.temperatura() == 0);
+```
 
-Para Linux, o comando `sudo apt install git` no terminal faz tudo.
-
-Para verificar a instalação abra o _prompt_ ou um terminal e execute `git --version`. Se não acusou _"comando não encontrado"_ é porque está tudo funcionando perfeitamente.
-
-
-
-## Códigos-fonte
-
-Considere adicionar os arquivos de código-fonte `.java` no diretório [src](./src/), como o exemplo [src/App.java](./src/App.java).
-
-
-
-## Licenciamento
-
-Este _template_ é _open source_ licenciado sob a GPL, assim como todos os projetos derivados dele. Mais detalhes em [LICENÇA.md](LICENÇA.md).
+---
+Obs.: os casos de teste não podem ser alterados, mas outros podem ser adicionados. Fique a vontade para adicionar códigos que imprimem ou separam os testes, por exemplo.
