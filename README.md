@@ -1,6 +1,6 @@
 # 1.3 // Objetos, Estado e Comportamento // Forno
 
-Use este link do GitHub Classroom para ter sua cópia alterável deste repositório: <>
+Use este link do GitHub Classroom para ter sua cópia alterável deste repositório: <https://classroom.github.com/a/GpTea8DT>
 
 Implementar respeitando os fundamentos de Orientação a Objetos.
 
